@@ -1,0 +1,211 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arios Executor - Advanced Roblox Executor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 1rem;
+        }
+
+        nav a {
+            color: #00ff88;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #00ccff;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background-color: #222;
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            color: #1a1a1a;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .faq {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .faq h2 {
+            font-size: 1.8rem;
+            color: #00ff88;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .faq-item h3 {
+            color: #00ccff;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-item p {
+            color: #ccc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+
+            nav a {
+                margin: 0 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Arios Executor</h1>
+        <p>Advanced Roblox Executor Software</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#faq">Frequently Asked Questions</a>
+        <a href="#download">Download</a>
+    </nav>
+
+    <section class="hero">
+        <h2>Enhance Your Roblox Experience</h2>
+        <p>Arios Executor is a sophisticated software solution designed to provide Roblox users with advanced scripting capabilities and enhanced gameplay features, maintaining full compatibility with Roblox’s platform.</p>
+        <a href="https://github.com/AriosTeam/AriosExecutor/releases/tag/AriosExecutor" class="download-btn">Download Arios Executor</a>
+    </section>
+
+    <section class="faq" id="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <h3>What is Arios Executor?</h3>
+            <p>Arios Executor is an advanced software tool engineered to enable Roblox users to execute custom scripts, thereby unlocking a wide range of enhanced gameplay functionalities while ensuring compatibility with Roblox’s systems.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Is Arios Executor secure for use?</h3>
+            <p>Arios Executor undergoes rigorous testing to ensure it is free from vulnerabilities and maintains operational integrity. For optimal security, we recommend downloading exclusively from our official website.</p>
+        </div>
+        <div class="faq-item">
+            <h3>How is Arios Executor installed?</h3>
+            <p>Download the executable file via the provided link, execute the installer, and follow the on-screen instructions. The installation process is streamlined for user convenience.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Are there risks of account suspension when using Arios Executor?</h3>
+            <p>Arios Executor incorporates advanced techniques to minimize detection by Roblox’s anti-cheat systems. Adhering to recommended usage guidelines significantly reduces the risk of account-related issues.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Is Arios Executor compatible with all Roblox games?</h3>
+            <p>Yes, Arios Executor is designed to function seamlessly across all Roblox games, enabling users to deploy custom scripts in titles such as Adopt Me, Jailbreak, and more.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Arios Software Solutions. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
